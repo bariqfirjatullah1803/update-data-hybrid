@@ -43,12 +43,12 @@ def main():
             email = futures[future]
             try:
                 data = future.result()
-                print(f"{count}/{total_emails} - {email}: {json.dumps(data, indent=2)}")
+                print(f"{count}/{total_emails} - {email}")
                 if data.get('success', False):
-                    generate_response = generate(email)
+                    generate(email)
                 results.append({"email": email, "response": data})
             except Exception as exc:
-                print(f"{count}/{total_emails} - {email}: {json.dumps({'error': str(exc)}, indent=2)}")
+                print(f"{count}/{total_emails} - {email}")
                 results.append({"email": email, "error": str(exc)})
 
 
