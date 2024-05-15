@@ -77,9 +77,16 @@ def progress(email):
 
 
 def main():
-    # Read emails from the file
-    with open('email.txt', 'r') as file:
-        emails = [line.strip() for line in file]
+    # Prompt the user for the filename
+    filename = input("Please enter the filename: ")
+
+    try:
+        # Read emails from the file
+        with open(filename, 'r') as file:
+            emails = [line.strip() for line in file]
+    except FileNotFoundError:
+        print(f"File '{filename}' not found.")
+        return
 
     total_emails = len(emails)
     results = []
@@ -93,26 +100,20 @@ def main():
             try:
                 print('Update data')
                 data = future.result()
-                if data['success']:
+                if data.get('success'):
                     print('Update progress')
-                    data_progress = progress(email)
-                    # if data_progress['success']:
-                    #     print('Check data')
-                    #     update_data = check(email)
-                    #     if update_data['success']:
-                    #         print('Generate Tugas')
-                    #         generate(email)
+                    progress(email)
                 results.append({"email": email, "response": data})
                 end_time = time.time()
                 execution_time = end_time - start_time
                 print(f"{count}/{total_emails} - {email}: {execution_time:.2f} seconds")
                 emails.remove(email)
-                with open('email.txt', 'w') as file:
+                with open(filename, 'w') as file:
                     for email in emails:
                         file.write(f"{email}\n")
             except requests.RequestException as e:
                 print(f"{count}/{total_emails} - {email} 'error': RequestException: {e}")
-            except json.JSONDecodeError:
+            except json.JSONDecodeError as e:
                 print(f"{count}/{total_emails} - {email} 'error': Invalid JSON response: {e}")
             except Exception as e:
                 print(f"{count}/{total_emails} - {email} 'error': {str(e)}")
