@@ -35,6 +35,11 @@ def check_status(email):
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
+    try:
+        response_json = response.json()
+        return response_json
+    except json.JSONDecodeError:
+        return {"error": "Invalid JSON response"}
 
 
 def main():
