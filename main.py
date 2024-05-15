@@ -131,7 +131,7 @@ def main():
             except json.JSONDecodeError as e:
                 print(f"{count}/{total_emails} - {email} 'error': Invalid JSON response: {e}")
             except Exception as e:
-                print(f"{count}/{total_emails} - {email} 'error': {str(e)}")
+                print(f"{count}/{total_emails} - {email} 'error': ", str(e))
 
 
 if __name__ == "__main__":

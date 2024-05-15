@@ -76,7 +76,7 @@ def main():
             except json.JSONDecodeError as e:
                 print(f"{count}/{total_emails} - {email} 'error': Invalid JSON response: {e}")
             except Exception as e:
-                print(f"{count}/{total_emails} - {email} 'error': {str(e)}")
+                print(f"{count}/{total_emails} - {email} 'error':", str(e))
             with open(filename, 'w') as file:
                 for email in emails:
                     file.write(f"{email}\n")
