@@ -123,9 +123,6 @@ def main():
                 progress_data = data['data']['progress']
                 if progress_data == 100:
                     emails.remove(email)
-                    with open(filename, 'w') as file:
-                        for email in emails:
-                            file.write(f"{email}\n")
                 # if data.get('success'):
                 #     print('Update progress')
                 #     progress(email)
@@ -140,6 +137,10 @@ def main():
                 print(f"{count}/{total_emails} - {email} 'error': Invalid JSON response: {e}")
             except Exception as e:
                 print(f"{count}/{total_emails} - {email} 'error': {str(e)}")
+
+            with open(filename, 'w') as file:
+                for email in emails:
+                    file.write(f"{email}\n")
 
 
 if __name__ == "__main__":
