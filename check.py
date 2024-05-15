@@ -59,9 +59,9 @@ def main():
 
     # Use ThreadPoolExecutor to send requests concurrently
     with concurrent.futures.ThreadPoolExecutor() as executor:
+        start_time = time.time()
         futures = {executor.submit(check_status, email): email for email in emails}
         for count, future in enumerate(concurrent.futures.as_completed(futures), 1):
-            start_time = time.time()
             email = futures[future]
             try:
                 data = future.result()
