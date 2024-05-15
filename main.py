@@ -28,6 +28,8 @@ def main():
     with open('email.txt', 'r') as file:
         emails = [line.strip() for line in file]
 
+    results = []
+
     # Use ThreadPoolExecutor to send requests concurrently
     with concurrent.futures.ThreadPoolExecutor() as executor:
         futures = {executor.submit(update, email): email for email in emails}
@@ -35,9 +37,14 @@ def main():
             email = futures[future]
             try:
                 data = future.result()
-                print(f"{email}: {json.dumps(data, indent=2)}")
+                results.append({"email": email, "response": data})
             except Exception as exc:
-                print(f"{email} generated an exception: {exc}")
+                results.append({"email": email, "error": str(exc)})
+
+    # Write the results to a text file
+    with open('response.txt', 'w') as file:
+        for result in results:
+            file.write(json.dumps(result, indent=2) + '\n')
 
 
 if __name__ == "__main__":
