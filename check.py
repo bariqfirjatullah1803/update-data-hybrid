@@ -68,9 +68,9 @@ def main():
                 progress_data = data['data']['progress']
                 if progress_data == 100:
                     emails.remove(email)
-                    end_time = time.time()
-                    execution_time = end_time - start_time
-                    print(f"{count}/{total_emails} - {email}: {progress_data} {execution_time:.2f} seconds")
+                end_time = time.time()
+                execution_time = end_time - start_time
+                print(f"{count}/{total_emails} - {email}: {progress_data} {execution_time:.2f} seconds")
             except requests.RequestException as e:
                 print(f"{count}/{total_emails} - {email} 'error': RequestException: {e}")
             except json.JSONDecodeError as e:
