@@ -1,13 +1,41 @@
 import requests
 import json
 import concurrent.futures
+import time
 
-dev = False
+dev = True
 
 if dev:
     baseUrl = 'https://api.karismagarudamulia.com/api/v1/'
 else:
     baseUrl = 'http://127.0.0.1:8000/api/v1/'
+
+
+def check(email):
+    url = baseUrl + "dev/check-report-pmo"
+    payload = json.dumps({"email": email})
+    headers = {'Content-Type': 'application/json'}
+
+    response = requests.post(url, headers=headers, data=payload)
+    try:
+        response_json = response.json()
+        return response_json
+    except json.JSONDecodeError:
+        return {"error": "Invalid JSON response"}
+
+
+def generate(email):
+    print('GENERATE TASK')
+    url = baseUrl + "dev/task/pdf"
+    payload = json.dumps({"email": email})
+    headers = {'Content-Type': 'application/json'}
+
+    response = requests.post(url, headers=headers, data=payload)
+    try:
+        response_json = response.json()
+        return response_json
+    except json.JSONDecodeError:
+        return {"error": "Invalid JSON response"}
 
 
 def update(email):
@@ -60,16 +88,34 @@ def main():
     with concurrent.futures.ThreadPoolExecutor() as executor:
         futures = {executor.submit(update, email): email for email in emails}
         for count, future in enumerate(concurrent.futures.as_completed(futures), 1):
+            start_time = time.time()
             email = futures[future]
             try:
+                print('Update data')
                 data = future.result()
                 if data['success']:
-                    progress(email)
-                print(f"{count}/{total_emails} - {email}")
+                    print('Update progress')
+                    data_progress = progress(email)
+                    # if data_progress['success']:
+                    #     print('Check data')
+                    #     update_data = check(email)
+                    #     if update_data['success']:
+                    #         print('Generate Tugas')
+                    #         generate(email)
                 results.append({"email": email, "response": data})
-            except Exception as exc:
-                print(f"{count}/{total_emails} - {email}")
-                results.append({"email": email, "error": str(exc)})
+                end_time = time.time()
+                execution_time = end_time - start_time
+                print(f"{count}/{total_emails} - {email}: {execution_time:.2f} seconds")
+                emails.remove(email)
+                with open('email.txt', 'w') as file:
+                    for email in emails:
+                        file.write(f"{email}\n")
+            except requests.RequestException as e:
+                print(f"{count}/{total_emails} - {email} 'error': RequestException: {e}")
+            except json.JSONDecodeError:
+                print(f"{count}/{total_emails} - {email} 'error': Invalid JSON response: {e}")
+            except Exception as e:
+                print(f"{count}/{total_emails} - {email} 'error': {str(e)}")
 
 
 if __name__ == "__main__":

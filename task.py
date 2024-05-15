@@ -1,6 +1,7 @@
 import requests
 import json
 import concurrent.futures
+import time
 
 
 def check(email):
@@ -40,16 +41,19 @@ def main():
     with concurrent.futures.ThreadPoolExecutor() as executor:
         futures = {executor.submit(check, email): email for email in emails}
         for count, future in enumerate(concurrent.futures.as_completed(futures), 1):
+            start_time = time.time()
             email = futures[future]
             try:
                 data = future.result()
-                print(f"{count}/{total_emails} - {email}")
                 if data.get('success', False):
                     generate(email)
                 results.append({"email": email, "response": data})
             except Exception as exc:
-                print(f"{count}/{total_emails} - {email}")
                 results.append({"email": email, "error": str(exc)})
+
+            end_time = time.time()
+            execution_time = end_time - start_time
+            print(f"{count}/{total_emails} - {email}: {execution_time:.2f} seconds")
 
 
 if __name__ == "__main__":
