@@ -3,7 +3,7 @@ import json
 import concurrent.futures
 import time
 
-dev = True
+dev = False
 
 if dev:
     baseUrl = 'https://api.karismagarudamulia.com/api/v1/'
@@ -89,12 +89,6 @@ def check_status(email):
 
     response = requests.request("POST", url, headers=headers, data=payload)
 
-    try:
-        response_json = response.json()
-        return response_json
-    except json.JSONDecodeError:
-        return {"error": "Invalid JSON response"}
-
 
 def main():
     # Prompt the user for the filename
@@ -113,34 +107,30 @@ def main():
 
     # Use ThreadPoolExecutor to send requests concurrently
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        futures = {executor.submit(check_status, email): email for email in emails}
+        futures = {executor.submit(update, email): email for email in emails}
         for count, future in enumerate(concurrent.futures.as_completed(futures), 1):
             start_time = time.time()
             email = futures[future]
             try:
-                # print('Update data')
+                print('Update data')
                 data = future.result()
-                progress_data = data['data']['progress']
-                if progress_data == 100:
-                    emails.remove(email)
-                # if data.get('success'):
-                #     print('Update progress')
-                #     progress(email)
-                # results.append({"email": email, "response": data})
+                if data.get('success'):
+                    print('Update progress')
+                    progress(email)
+                results.append({"email": email, "response": data})
                 end_time = time.time()
                 execution_time = end_time - start_time
-                print(f"{count}/{total_emails} - {email}: {progress_data} {execution_time:.2f} seconds")
-
+                print(f"{count}/{total_emails} - {email}: {execution_time:.2f} seconds")
+                emails.remove(email)
+                with open(filename, 'w') as file:
+                    for email in emails:
+                        file.write(f"{email}\n")
             except requests.RequestException as e:
                 print(f"{count}/{total_emails} - {email} 'error': RequestException: {e}")
             except json.JSONDecodeError as e:
                 print(f"{count}/{total_emails} - {email} 'error': Invalid JSON response: {e}")
             except Exception as e:
                 print(f"{count}/{total_emails} - {email} 'error': {str(e)}")
-
-            with open(filename, 'w') as file:
-                for email in emails:
-                    file.write(f"{email}\n")
 
 
 if __name__ == "__main__":
