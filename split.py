@@ -1,7 +1,7 @@
 import os
 
 
-def split_email_file(input_file, chunk_size=1000):
+def split_email_file(input_file, chunk_size=5000):
     with open(input_file, 'r') as file:
         emails = [line.strip() for line in file]
 
