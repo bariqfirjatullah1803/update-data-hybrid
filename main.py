@@ -3,7 +3,7 @@ import json
 import concurrent.futures
 import time
 
-dev = False
+dev = True
 
 if dev:
     baseUrl = 'https://api.karismagarudamulia.com/api/v1/'
