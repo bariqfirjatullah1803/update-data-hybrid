@@ -4,8 +4,8 @@ import concurrent.futures
 
 
 def update(email):
-    # url = "https://api.karismagarudamulia.com/api/v1/update-data"
-    url = "http://127.0.0.1:8000/api/v1/update-data"
+    url = "https://api.karismagarudamulia.com/api/v1/update-data/complete"
+    # url = "http://127.0.0.1:8000/api/v1/update-data/complete"
 
     payload = json.dumps({
         "email": email
@@ -15,7 +15,12 @@ def update(email):
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
-    return response.text
+    # Parse the response as JSON
+    try:
+        response_json = response.json()
+        return response_json
+    except json.JSONDecodeError:
+        return {"error": "Invalid JSON response"}
 
 
 def main():
@@ -30,7 +35,7 @@ def main():
             email = futures[future]
             try:
                 data = future.result()
-                print(f"{email}: {data}")
+                print(f"{email}: {json.dumps(data, indent=2)}")
             except Exception as exc:
                 print(f"{email} generated an exception: {exc}")
 
