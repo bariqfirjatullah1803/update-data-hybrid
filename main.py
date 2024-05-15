@@ -40,6 +40,7 @@ def main():
                 print(f"{email}: {json.dumps(data, indent=2)}")
                 results.append({"email": email, "response": data})
             except Exception as exc:
+                print(f"{email}: {json.dumps(data, indent=2)}")
                 results.append({"email": email, "error": str(exc)})
 
     # Write the results to a text file
