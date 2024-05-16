@@ -140,12 +140,13 @@ def main():
                 data = future.result()
                 if data.get('success'):
                     task_pdf(email)
+                else:
+                    emails.remove(email)
                 results.append({"email": email, "response": data})
                 end_time = time.time()
                 execution_time = end_time - start_time
                 print(json.dumps(data, indent=2))
                 print(f"{count}/{total_emails} - {email}: {execution_time:.2f} seconds")
-                emails.remove(email)
                 with open(filename, 'w') as file:
                     for email in emails:
                         file.write(f"{email}\n")
