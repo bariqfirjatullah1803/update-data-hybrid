@@ -132,7 +132,7 @@ def main():
     # Use ThreadPoolExecutor to send requests concurrently
     with concurrent.futures.ThreadPoolExecutor() as executor:
         start_time = time.time()
-        futures = {executor.submit(update, email): email for email in emails}
+        futures = {executor.submit(complete, email): email for email in emails}
         for count, future in enumerate(concurrent.futures.as_completed(futures), 1):
             email = futures[future]
             try:
