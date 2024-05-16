@@ -114,6 +114,25 @@ def check_status(email):
         return {"error": "Invalid JSON response"}
 
 
+def assigment(email):
+    url = baseUrl + "assignment"
+
+    payload = json.dumps({
+        "email": email
+    })
+    headers = {
+        'Content-Type': 'application/json',
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    try:
+        response_json = response.json()
+        return response_json
+    except json.JSONDecodeError:
+        return {"error": "Invalid JSON response"}
+
+
 def main():
     # Prompt the user for the filename
     filename = input("Please enter the filename: ")
@@ -132,15 +151,14 @@ def main():
     # Use ThreadPoolExecutor to send requests concurrently
     with concurrent.futures.ThreadPoolExecutor() as executor:
         start_time = time.time()
-        futures = {executor.submit(score, email): email for email in emails}
+        futures = {executor.submit(assigment(), email): email for email in emails}
         for count, future in enumerate(concurrent.futures.as_completed(futures), 1):
             email = futures[future]
             try:
-                print('Update data')
                 data = future.result()
-                if not data.get('success'):
-                    # task_pdf(email)
-                    emails.remove(email)
+                # if not data.get('success'):
+                # task_pdf(email)
+                # emails.remove(email)
                 results.append({"email": email, "response": data})
                 end_time = time.time()
                 execution_time = end_time - start_time
