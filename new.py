@@ -47,14 +47,16 @@ def main():
             email = futures[future]
             try:
                 data = future.result()
+                if data['success'] and data['code'] == 200:
+                    emails.remove(email)
                 end_time = time.time()
                 execution_time = end_time - start_time
                 print(f"{count}/{total_emails} - {email}: {execution_time:.2f} seconds")
                 print(json.dumps(data, indent=2))
-                # emails.remove(email)
-                # with open(filename, 'w') as file:
-                #     for email in emails:
                 r1.write(f"{email}: {data['message']}\n")
+                with open(filename, 'w') as file:
+                    for email in emails:
+                        file.write(f"{email}\n")
             except requests.RequestException as e:
                 print(f"{count}/{total_emails} - {email} 'error': RequestException: {e}")
             except json.JSONDecodeError as e:
