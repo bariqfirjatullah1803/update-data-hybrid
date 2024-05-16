@@ -5,7 +5,7 @@ import time
 
 
 def check(email):
-    url = "http://localhost:8000/api/v1/dev/check"
+    url = "https://api.karismagarudamulia.com/api/v1/dev/check"
 
     payload = json.dumps({
         "email": email
