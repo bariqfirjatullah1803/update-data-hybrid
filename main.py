@@ -6,41 +6,59 @@ import time
 dev = True
 
 if dev:
-    baseUrl = 'https://api.karismagarudamulia.com/api/v1/'
+    baseUrl = 'https://api.karismagarudamulia.com/api/v1/dev/'
 else:
     baseUrl = 'http://127.0.0.1:8000/api/v1/'
 
 
-def check(email):
-    url = baseUrl + "dev/check-report-pmo"
-    payload = json.dumps({"email": email})
-    headers = {'Content-Type': 'application/json'}
-
-    response = requests.post(url, headers=headers, data=payload)
-    try:
-        response_json = response.json()
-        return response_json
-    except json.JSONDecodeError:
-        return {"error": "Invalid JSON response"}
-
-
-def generate(email):
-    print('GENERATE TASK')
-    url = baseUrl + "dev/task/pdf"
-
-    payload = json.dumps({"email": email})
-    headers = {'Content-Type': 'application/json'}
-
-    response = requests.post(url, headers=headers, data=payload)
-    try:
-        response_json = response.json()
-        return response_json
-    except json.JSONDecodeError:
-        return {"error": "Invalid JSON response"}
-
-
 def update(email):
-    url = baseUrl + "update-data/complete"
+    url = baseUrl + "update"
+    payload = json.dumps({"email": email})
+    headers = {'Content-Type': 'application/json'}
+
+    response = requests.post(url, headers=headers, data=payload)
+    try:
+        response_json = response.json()
+        return response_json
+    except json.JSONDecodeError:
+        return {"error": "Invalid JSON response"}
+
+
+def complete(email):
+    url = baseUrl + "complete"
+
+    payload = json.dumps({"email": email})
+    headers = {'Content-Type': 'application/json'}
+
+    response = requests.post(url, headers=headers, data=payload)
+    try:
+        response_json = response.json()
+        return response_json
+    except json.JSONDecodeError:
+        return {"error": "Invalid JSON response"}
+
+
+def task_pdf(email):
+    url = baseUrl + "task-pdf"
+
+    payload = json.dumps({
+        "email": email
+    })
+    headers = {
+        'Content-Type': 'application/json',
+    }
+
+    response = requests.request("POST", url, headers=headers, data=payload)
+    # Parse the response as JSON
+    try:
+        response_json = response.json()
+        return response_json
+    except json.JSONDecodeError:
+        return {"error": "Invalid JSON response"}
+
+
+def score(email):
+    url = baseUrl + "score"
 
     payload = json.dumps({
         "email": email
@@ -59,7 +77,7 @@ def update(email):
 
 
 def progress(email):
-    url = baseUrl + "dev/progress"
+    url = baseUrl + "progress"
 
     payload = json.dumps({
         "email": email
@@ -69,7 +87,7 @@ def progress(email):
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
-    # Parse the response as JSON
+
     try:
         response_json = response.json()
         return response_json
@@ -78,7 +96,7 @@ def progress(email):
 
 
 def check_status(email):
-    url = baseUrl + "dev/check-status"
+    url = baseUrl + "progress"
 
     payload = json.dumps({
         "email": email
@@ -88,6 +106,12 @@ def check_status(email):
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
+
+    try:
+        response_json = response.json()
+        return response_json
+    except json.JSONDecodeError:
+        return {"error": "Invalid JSON response"}
 
 
 def main():
@@ -131,7 +155,7 @@ def main():
             except json.JSONDecodeError as e:
                 print(f"{count}/{total_emails} - {email} 'error': Invalid JSON response: {e}")
             except Exception as e:
-                print(f"{count}/{total_emails} - {email} 'error': ", str(e))
+                print(f"{count}/{total_emails} - {email} 'error': ", e)
 
 
 if __name__ == "__main__":
