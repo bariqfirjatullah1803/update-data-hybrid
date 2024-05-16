@@ -138,9 +138,8 @@ def main():
             try:
                 print('Update data')
                 data = future.result()
-                if data.get('success'):
-                    task_pdf(email)
-                else:
+                if not data.get('success'):
+                    # task_pdf(email)
                     emails.remove(email)
                 results.append({"email": email, "response": data})
                 end_time = time.time()
