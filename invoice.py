@@ -67,7 +67,7 @@ def main():
                     post_test = response_data['post_test']
                     slug = response_data['slug']
                     certificate = '-'
-                    if progress >= 100:
+                    if int(progress) >= 100:
                         certificate = "https://api.karismagarudamulia.com/api/v1/certificate/" + slug + "/" + student_id
                     with open('invoice-result.csv', 'a') as log:
                         log.write(
