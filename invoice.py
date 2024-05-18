@@ -40,7 +40,7 @@ def main():
     r1 = open('result.txt', 'a')
     with open('invoice-result.csv', 'w') as log:
         log.write(
-            f'invoice,email,name,voucher,redeem_code,redeem_date,progress,completion_date,student_id,course_id,uk,pre_test,post_test\n')
+            f'invoice,email,name,voucher,redeem_code,redeem_date,progress,completion_date,student_id,course_id,uk,pre_test,post_test,certificate\n')
     # Use ThreadPoolExecutor to send requests concurrently
     with concurrent.futures.ThreadPoolExecutor() as executor:
         start_time = time.time()
@@ -49,6 +49,7 @@ def main():
             invoice = futures[future]
             try:
                 data = future.result()
+                print(data)
                 if data['success']:
                     response_data = data['data']
                     invoice_code = response_data['invoice_code']
@@ -70,7 +71,7 @@ def main():
                         certificate = "https://api.karismagarudamulia.com/api/v1/certificate/" + slug + "/" + student_id
                     with open('invoice-result.csv', 'a') as log:
                         log.write(
-                            f'{invoice},{email},{name},{voucher},{redeem_code},{redeem_date},{progress},{completion_date},{student_id},{course_id},{uk},{pre_test},{post_test},{certificate}\n')
+                            f'{invoice_code},{email},{name},{voucher},{redeem_code},{redeem_date},{progress},{completion_date},{student_id},{course_id},{uk},{pre_test},{post_test},{certificate}\n')
                 # if data['success'] and data['code'] == 200:
                 #     invoices.remove(invoice)
                 end_time = time.time()
