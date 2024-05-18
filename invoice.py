@@ -64,9 +64,10 @@ def main():
                     uk = response_data['uk']
                     pre_test = response_data['pre_test']
                     post_test = response_data['post_test']
+                    slug = response_data['slug']
                     with open('invoice-result.csv', 'a') as log:
                         log.write(
-                            f'{invoice},{email},{name},{voucher},{redeem_code},{redeem_date},{progress},{completion_date},{student_id},{course_id},{uk},{pre_test},{post_test}\n')
+                            f'{invoice},{email},{name},{voucher},{redeem_code},{redeem_date},{progress},{completion_date},{student_id},{course_id},{uk},{pre_test},{post_test},https://api.karismagarudamulia.com/api/v1/certificate/{slug}/{student_id}\n')
                 # if data['success'] and data['code'] == 200:
                 #     invoices.remove(invoice)
                 end_time = time.time()
