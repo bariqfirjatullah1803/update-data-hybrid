@@ -47,8 +47,8 @@ def main():
             email = futures[future]
             try:
                 data = future.result()
-                if data['success'] and data['code'] == 200:
-                    emails.remove(email)
+                # if data['success'] and data['code'] == 200:
+                    # emails.remove(email)
                 end_time = time.time()
                 execution_time = end_time - start_time
                 print(f"{count}/{total_emails} - {email}: {execution_time:.2f} seconds")
